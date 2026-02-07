@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Fix: Always use process.env.API_KEY directly when initializing the client as per instructions.
+const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const aiService = {
   /**
@@ -30,6 +31,7 @@ export const aiService = {
     });
 
     try {
+      // Fix: Access response.text property directly as it is a getter, do not call it as a method.
       return JSON.parse(response.text || '{}');
     } catch (e) {
       console.error("Failed to parse AI response", e);
@@ -63,6 +65,7 @@ export const aiService = {
     });
 
     try {
+      // Fix: Access response.text property directly.
       return JSON.parse(response.text || '{}').tags || [];
     } catch (e) {
       return [];

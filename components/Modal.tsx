@@ -13,16 +13,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between p-6 border-b border-slate-800">
-          <h2 className="text-xl font-semibold text-slate-100">{title}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-200 transition-colors">
-            <X size={24} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300" onClick={onClose} />
+      <div className="relative bg-[#18181b] border border-[#27272a] rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div className="flex items-center justify-between px-8 py-6 border-b border-[#27272a]">
+          <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#27272a] text-zinc-500 hover:text-white transition-all">
+            <X size={20} />
           </button>
         </div>
-        <div className="p-6 max-h-[80vh] overflow-y-auto">
+        <div className="p-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
           {children}
         </div>
       </div>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, BookMarked, FileText, Star, Settings } from 'lucide-react';
+import { LayoutDashboard, BookMarked, FileText, Sparkles, UserCircle } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -9,20 +9,21 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
     { id: 'notes', label: 'Notes', icon: FileText },
-    { id: 'bookmarks', label: 'Bookmarks', icon: BookMarked },
+    { id: 'bookmarks', label: 'Library', icon: BookMarked },
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-full sticky top-0">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
-          ZenKeep
-        </h1>
+    <aside className="w-64 bg-[#09090b] border-r border-[#27272a] flex flex-col h-screen sticky top-0">
+      <div className="p-8 flex items-center space-x-3">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <Sparkles size={18} className="text-white" />
+        </div>
+        <h1 className="text-xl font-bold tracking-tight text-white">ZenKeep</h1>
       </div>
       
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 px-4 mt-2 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -30,23 +31,34 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
                 isActive 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-[#18181b] text-white border border-[#27272a]' 
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-[#18181b]/50'
               }`}
             >
-              <Icon size={20} />
-              <span className="font-medium">{item.label}</span>
+              <Icon size={18} className={isActive ? 'text-blue-400' : 'group-hover:text-zinc-300'} />
+              <span className="text-sm font-medium">{item.label}</span>
+              {isActive && <div className="ml-auto w-1 h-4 rounded-full bg-blue-500" />}
             </button>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-800">
-        <div className="flex items-center space-x-3 px-4 py-3 text-slate-500 text-sm">
-          <Settings size={18} />
-          <span>v1.0.0</span>
+      <div className="p-6 mt-auto">
+        <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/5 to-purple-500/5 border border-blue-500/10">
+          <p className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 mb-2">Pro Plan</p>
+          <div className="flex items-center justify-between">
+             <span className="text-xs text-zinc-300">Unlimited AI usage</span>
+             <Sparkles size={12} className="text-blue-400" />
+          </div>
+        </div>
+        <div className="flex items-center space-x-3 mt-6 px-2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+          <UserCircle size={24} className="text-zinc-400" />
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-white">User Account</span>
+            <span className="text-[10px] text-zinc-500">Free Tier</span>
+          </div>
         </div>
       </div>
     </aside>

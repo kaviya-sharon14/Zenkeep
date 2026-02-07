@@ -6,7 +6,7 @@ import NotesPage from './pages/NotesPage';
 import BookmarksPage from './pages/BookmarksPage';
 import { storage } from './store/storage';
 import { Note, Bookmark } from './types';
-import { Search, Plus, Filter, LayoutGrid, List } from 'lucide-react';
+import { Search, Plus, Sparkles, Command } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'notes' | 'bookmarks'>('dashboard');
@@ -16,92 +16,66 @@ const App: React.FC = () => {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false);
 
-  // Load initial data
   useEffect(() => {
     setNotes(storage.getNotes());
     setBookmarks(storage.getBookmarks());
   }, []);
 
-  // Save data on change
-  useEffect(() => {
-    storage.saveNotes(notes);
-  }, [notes]);
-
-  useEffect(() => {
-    storage.saveBookmarks(bookmarks);
-  }, [bookmarks]);
+  useEffect(() => { storage.saveNotes(notes); }, [notes]);
+  useEffect(() => { storage.saveBookmarks(bookmarks); }, [bookmarks]);
 
   const stats = useMemo(() => ({
     totalNotes: notes.length,
     totalBookmarks: bookmarks.length,
-    recentNotes: notes.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 3),
-    recentBookmarks: bookmarks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3),
+    recentNotes: [...notes].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 3),
+    recentBookmarks: [...bookmarks].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3),
   }), [notes, bookmarks]);
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return <Dashboard 
-          stats={stats} 
-          onNavigate={(tab) => setActiveTab(tab as any)}
-          onAddNote={() => setIsNoteModalOpen(true)}
-          onAddBookmark={() => setIsBookmarkModalOpen(true)}
-        />;
-      case 'notes':
-        return <NotesPage 
-          notes={notes} 
-          setNotes={setNotes} 
-          searchTerm={searchTerm} 
-          isOpen={isNoteModalOpen} 
-          setIsOpen={setIsNoteModalOpen} 
-        />;
-      case 'bookmarks':
-        return <BookmarksPage 
-          bookmarks={bookmarks} 
-          setBookmarks={setBookmarks} 
-          searchTerm={searchTerm} 
-          isOpen={isBookmarkModalOpen} 
-          setIsOpen={setIsBookmarkModalOpen} 
-        />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-200">
+    <div className="flex min-h-screen bg-[#09090b] text-zinc-200">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        {/* Header */}
-        <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 px-8 py-4 flex items-center justify-between">
-          <div className="flex-1 max-w-xl">
-            <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={18} />
+        {/* Modern AI Studio Header */}
+        <header className="h-16 flex items-center justify-between px-8 border-b border-[#27272a] bg-[#09090b]/80 backdrop-blur-xl z-50">
+          <div className="flex items-center space-x-6 flex-1 max-w-2xl">
+            <div className="relative flex-1 group">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-400 transition-colors">
+                <Search size={16} />
+              </div>
               <input 
                 type="text" 
-                placeholder={`Search ${activeTab}...`}
+                placeholder={`Search your ${activeTab}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 transition-all"
+                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-10 pr-12 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-zinc-600"
               />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1 px-1.5 py-0.5 rounded border border-[#27272a] bg-[#09090b] text-[10px] text-zinc-500">
+                <Command size={10} />
+                <span>K</span>
+              </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4 ml-8">
+          <div className="flex items-center space-x-3 ml-4">
             <button 
               onClick={() => activeTab === 'notes' ? setIsNoteModalOpen(true) : setIsBookmarkModalOpen(true)}
-              className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl transition-all font-medium shadow-lg shadow-blue-900/20 active:scale-95"
+              className="flex items-center space-x-2 bg-white hover:bg-zinc-200 text-black px-4 py-1.5 rounded-lg transition-all text-sm font-semibold shadow-sm active:scale-95"
             >
-              <Plus size={18} />
-              <span>Create {activeTab === 'bookmarks' ? 'Bookmark' : 'Note'}</span>
+              <Plus size={16} strokeWidth={3} />
+              <span>Create</span>
             </button>
+            <div className="w-8 h-8 rounded-full bg-[#18181b] border border-[#27272a] flex items-center justify-center cursor-pointer hover:bg-[#27272a] transition-colors">
+                <Sparkles size={14} className="text-zinc-400" />
+            </div>
           </div>
         </header>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-8 bg-slate-950">
-          {renderContent()}
+        {/* Content with smoother scrolling */}
+        <div className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar p-8">
+          {activeTab === 'dashboard' && <Dashboard stats={stats} onNavigate={setActiveTab} onAddNote={() => setIsNoteModalOpen(true)} onAddBookmark={() => setIsBookmarkModalOpen(true)} />}
+          {activeTab === 'notes' && <NotesPage notes={notes} setNotes={setNotes} searchTerm={searchTerm} isOpen={isNoteModalOpen} setIsOpen={setIsNoteModalOpen} />}
+          {activeTab === 'bookmarks' && <BookmarksPage bookmarks={bookmarks} setBookmarks={setBookmarks} searchTerm={searchTerm} isOpen={isBookmarkModalOpen} setIsOpen={setIsBookmarkModalOpen} />}
         </div>
       </main>
     </div>

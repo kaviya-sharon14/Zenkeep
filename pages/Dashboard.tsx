@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Note, Bookmark } from '../types';
-import { FileText, BookMarked, ArrowRight, Clock, Star, ExternalLink } from 'lucide-react';
+import { FileText, BookMarked, ArrowRight, Clock, Star, ExternalLink, Sparkles } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface DashboardProps {
@@ -11,111 +11,125 @@ interface DashboardProps {
     recentNotes: Note[];
     recentBookmarks: Bookmark[];
   };
-  onNavigate: (tab: string) => void;
+  // Fix: Specify the union type for tabs to match the App state definition in App.tsx
+  onNavigate: (tab: 'notes' | 'bookmarks' | 'dashboard') => void;
   onAddNote: () => void;
   onAddBookmark: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, onAddNote, onAddBookmark }) => {
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div>
-        <h2 className="text-3xl font-bold text-white mb-2">Welcome back!</h2>
-        <p className="text-slate-400">Here's a quick look at your organized space.</p>
-      </div>
+    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      <header className="space-y-2">
+        <h2 className="text-4xl font-bold tracking-tight text-white flex items-center space-x-3">
+          <span>Overview</span>
+          <div className="px-2 py-0.5 rounded bg-blue-500/10 border-blue-500/20 text-[10px] font-bold text-blue-400 uppercase tracking-widest">Workspace</div>
+        </h2>
+        <p className="text-zinc-500 text-lg">Your synchronized knowledge base and AI assistants.</p>
+      </header>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-slate-700 transition-all group">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400 group-hover:scale-110 transition-transform">
+      {/* Hero Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div 
+          onClick={() => onNavigate('notes')}
+          className="group cursor-pointer bg-[#18181b] border border-[#27272a] p-8 rounded-2xl hover:border-zinc-700 transition-all relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+            <FileText size={120} />
+          </div>
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform">
               <FileText size={24} />
             </div>
+            <div className="text-4xl font-bold text-white mb-1 tracking-tighter">{stats.totalNotes}</div>
+            <p className="text-zinc-400 font-medium">Notes captured</p>
           </div>
-          <div className="text-3xl font-bold text-white">{stats.totalNotes}</div>
-          <div className="text-slate-400 text-sm">Notes saved</div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-slate-700 transition-all group">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-indigo-500/10 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform">
+        <div 
+          onClick={() => onNavigate('bookmarks')}
+          className="group cursor-pointer bg-[#18181b] border border-[#27272a] p-8 rounded-2xl hover:border-zinc-700 transition-all relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+            <BookMarked size={120} />
+          </div>
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
               <BookMarked size={24} />
             </div>
+            <div className="text-4xl font-bold text-white mb-1 tracking-tighter">{stats.totalBookmarks}</div>
+            <p className="text-zinc-400 font-medium">Bookmarks saved</p>
           </div>
-          <div className="text-3xl font-bold text-white">{stats.totalBookmarks}</div>
-          <div className="text-slate-400 text-sm">Bookmarks kept</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Notes */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-white flex items-center space-x-2">
-              <FileText className="text-blue-400" size={20} />
-              <span>Recent Notes</span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-4">
+        {/* Recent Items with refined typography */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b border-[#27272a] pb-4">
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-500 flex items-center space-x-2">
+              <Sparkles size={14} className="text-blue-400" />
+              <span>Latest Notes</span>
             </h3>
-            <button onClick={() => onNavigate('notes')} className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center space-x-1">
-              <span>View all</span>
+            <button onClick={() => onNavigate('notes')} className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors flex items-center space-x-1">
+              <span>See more</span>
               <ArrowRight size={14} />
             </button>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {stats.recentNotes.length > 0 ? stats.recentNotes.map(note => (
-              <div key={note.id} className="bg-slate-900/50 border border-slate-800 p-4 rounded-xl hover:bg-slate-800/50 transition-colors">
-                <div className="flex items-center justify-between mb-1">
-                  <h4 className="font-medium text-slate-100 line-clamp-1">{note.title || "Untitled Note"}</h4>
-                  {note.isFavorite && <Star size={14} className="text-yellow-500 fill-yellow-500" />}
+              <div key={note.id} className="bg-[#18181b]/50 border border-[#27272a] p-5 rounded-xl hover:bg-[#18181b] transition-all hover:-translate-y-1 ai-glow cursor-pointer">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-white truncate max-w-[70%]">{note.title || "Untitled"}</h4>
+                  <div className="flex items-center space-x-2 text-[10px] text-zinc-500">
+                    <Clock size={10} />
+                    <span>{formatDistanceToNow(new Date(note.updatedAt))} ago</span>
+                  </div>
                 </div>
-                <p className="text-sm text-slate-400 line-clamp-2 mb-2">{note.content}</p>
-                <div className="flex items-center text-[10px] text-slate-500 uppercase tracking-wider space-x-2">
-                  <Clock size={10} />
-                  <span>Modified {formatDistanceToNow(new Date(note.updatedAt))} ago</span>
-                </div>
+                <p className="text-sm text-zinc-500 line-clamp-2 leading-relaxed">{note.content}</p>
               </div>
             )) : (
-              <div className="text-center py-8 bg-slate-900/30 rounded-xl border border-dashed border-slate-800">
-                <p className="text-slate-500 text-sm mb-4">No notes yet</p>
-                <button onClick={onAddNote} className="text-blue-400 text-sm hover:underline">Create your first note</button>
+              <div className="py-12 text-center bg-[#18181b]/30 rounded-2xl border-2 border-dashed border-[#27272a]">
+                <p className="text-zinc-500 text-sm mb-4">Start capturing ideas.</p>
+                <button onClick={onAddNote} className="text-blue-400 text-sm font-bold hover:underline">New Note</button>
               </div>
             )}
           </div>
         </section>
 
-        {/* Recent Bookmarks */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-white flex items-center space-x-2">
-              <BookMarked className="text-indigo-400" size={20} />
-              <span>Recent Bookmarks</span>
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b border-[#27272a] pb-4">
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-500 flex items-center space-x-2">
+              <ExternalLink size={14} className="text-purple-400" />
+              <span>Web Library</span>
             </h3>
-            <button onClick={() => onNavigate('bookmarks')} className="text-indigo-400 hover:text-indigo-300 text-sm font-medium flex items-center space-x-1">
+            <button onClick={() => onNavigate('bookmarks')} className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors flex items-center space-x-1">
               <span>View all</span>
               <ArrowRight size={14} />
             </button>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
              {stats.recentBookmarks.length > 0 ? stats.recentBookmarks.map(bookmark => (
-              <div key={bookmark.id} className="bg-slate-900/50 border border-slate-800 p-4 rounded-xl hover:bg-slate-800/50 transition-colors">
+              <div key={bookmark.id} className="bg-[#18181b]/50 border border-[#27272a] p-5 rounded-xl hover:bg-[#18181b] transition-all hover:-translate-y-1 ai-glow group cursor-pointer">
                 <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-slate-100 line-clamp-1 mb-1">{bookmark.title || bookmark.url}</h4>
-                    <p className="text-sm text-slate-400 line-clamp-1 mb-2">{bookmark.description}</p>
+                  <div className="flex-1 min-w-0 pr-4">
+                    <h4 className="font-semibold text-white truncate mb-1">{bookmark.title || bookmark.url}</h4>
+                    <p className="text-xs text-zinc-500 truncate mb-3">{new URL(bookmark.url).hostname}</p>
                   </div>
-                  <a href={bookmark.url} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-500 hover:text-indigo-400 transition-colors">
-                    <ExternalLink size={16} />
-                  </a>
+                  <div className="p-2 rounded-lg bg-[#27272a] text-zinc-400 group-hover:text-purple-400 transition-colors">
+                    <ExternalLink size={14} />
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {bookmark.tags.slice(0, 2).map(tag => (
-                    <span key={tag} className="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20">#{tag}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {bookmark.tags.slice(0, 3).map(tag => (
+                    <span key={tag} className="text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded">#{tag}</span>
                   ))}
                 </div>
               </div>
             )) : (
-              <div className="text-center py-8 bg-slate-900/30 rounded-xl border border-dashed border-slate-800">
-                <p className="text-slate-500 text-sm mb-4">No bookmarks yet</p>
-                <button onClick={onAddBookmark} className="text-indigo-400 text-sm hover:underline">Add your first bookmark</button>
+              <div className="py-12 text-center bg-[#18181b]/30 rounded-2xl border-2 border-dashed border-[#27272a]">
+                <p className="text-zinc-500 text-sm mb-4">Save your first resource.</p>
+                <button onClick={onAddBookmark} className="text-purple-400 text-sm font-bold hover:underline">Add Bookmark</button>
               </div>
             )}
           </div>
